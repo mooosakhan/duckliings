@@ -235,9 +235,11 @@ export default function Pond() {
       const segmentLengths = segments.map((seg) => {
         let length = 0;
         if (seg.type === "line") {
-          length = Math.hypot(seg.x2 - seg.x1, seg.y2 - seg.y1);
+          const lineSeg = seg as typeof seg & { x1: number; y1: number; x2: number; y2: number };
+          length = Math.hypot(lineSeg.x2 - lineSeg.x1, lineSeg.y2 - lineSeg.y1);
         } else {
-          length = seg.r * Math.abs(seg.end - seg.start);
+          const arcSeg = seg as typeof seg & { cx: number; cy: number; r: number; start: number; end: number };
+          length = arcSeg.r * Math.abs(arcSeg.end - arcSeg.start);
         }
         totalLength += length;
         return length;
@@ -251,14 +253,16 @@ export default function Pond() {
           const t = currentDist / segmentLengths[i];
 
           if (seg.type === "line") {
-            const x = seg.x1 + t * (seg.x2 - seg.x1);
-            const y = seg.y1 + t * (seg.y2 - seg.y1);
-            const angle = Math.atan2(seg.y2 - seg.y1, seg.x2 - seg.x1);
+            const lineSeg = seg as typeof seg & { x1: number; y1: number; x2: number; y2: number };
+            const x = lineSeg.x1 + t * (lineSeg.x2 - lineSeg.x1);
+            const y = lineSeg.y1 + t * (lineSeg.y2 - lineSeg.y1);
+            const angle = Math.atan2(lineSeg.y2 - lineSeg.y1, lineSeg.x2 - lineSeg.x1);
             return { x, y, angle };
           } else {
-            const a = seg.start + t * (seg.end - seg.start);
-            const x = seg.cx + seg.r * Math.cos(a);
-            const y = seg.cy + seg.r * Math.sin(a);
+            const arcSeg = seg as typeof seg & { cx: number; cy: number; r: number; start: number; end: number };
+            const a = arcSeg.start + t * (arcSeg.end - arcSeg.start);
+            const x = arcSeg.cx + arcSeg.r * Math.cos(a);
+            const y = arcSeg.cy + arcSeg.r * Math.sin(a);
             const angle = a + Math.PI / 2;
             return { x, y, angle };
           }
