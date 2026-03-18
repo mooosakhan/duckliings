@@ -23,7 +23,7 @@ export default function Pond() {
     ];
     let currentSpeaker = 0;
     let messageTimer = 0;
-    const messageDuration = 3000; // 3 sec per duck
+    const messageDuration = 5000; // 5 sec per duck
     let globalTime = 0;
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext("2d")!;
